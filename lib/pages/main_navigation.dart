@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter12rplthn2627/models/song_model.dart';
 
 import 'feed_page.dart';
 import 'profile_page.dart';
 import 'search_page.dart';
-
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -16,19 +15,31 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    FeedPage(),
-    SearchPage(),
-    ProfilePage(),
-  ];
- 
+  List<Song> favoriteSongs = [];
+
+  void toggleFavorite(Song song) {
+    setState(() {
+      if (favoriteSongs.contains(song)) {
+        favoriteSongs.remove(song);
+      } else {
+        favoriteSongs.add(song);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
+    final List<Widget> _pages = [
+      FeedPage(favoriteSongs: favoriteSongs, onFavoriteToggle: toggleFavorite),
+      const SearchPage(),
+      ProfilePage(
+        favoriteSongs: favoriteSongs,
+        onFavoriteToggle: toggleFavorite,
       ),
+    ];
+
+    return Scaffold(
+      body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
@@ -37,21 +48,14 @@ class _MainNavigationState extends State<MainNavigation> {
         unselectedItemColor: Colors.grey[500],
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.search_outlined),
             label: 'Search',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-                  ]
-
-      )
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
     );
   }
 }

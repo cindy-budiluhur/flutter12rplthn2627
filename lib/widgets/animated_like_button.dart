@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 
 class AnimatedLikeButton extends StatefulWidget {
-  const AnimatedLikeButton({super.key});
+  final bool isLiked;
+  final VoidCallback? onTap;
+
+  const AnimatedLikeButton({super.key, required this.isLiked, this.onTap});
 
   @override
   State<AnimatedLikeButton> createState() => _AnimatedLikeButtonState();
 }
 
 class _AnimatedLikeButtonState extends State<AnimatedLikeButton> {
-  bool isLiked = false;
-  int likeCount = 128;
   double scale = 1.0;
 
   void _toggleLike() {
     setState(() {
-      isLiked = !isLiked;
-      isLiked ? likeCount++ : likeCount--;
       scale = 1.35;
     });
 
@@ -24,6 +23,10 @@ class _AnimatedLikeButtonState extends State<AnimatedLikeButton> {
         scale = 1.0;
       });
     });
+
+    if (widget.onTap != null) {
+      widget.onTap!();
+    }
   }
 
   @override
@@ -35,15 +38,19 @@ class _AnimatedLikeButtonState extends State<AnimatedLikeButton> {
           duration: const Duration(milliseconds: 150),
           child: IconButton(
             icon: Icon(
-              isLiked ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-              color: isLiked ? const Color(0xFFFF4757) : Colors.grey[400],
+              widget.isLiked
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
+              color: widget.isLiked
+                  ? const Color(0xFFFF4757)
+                  : Colors.grey[400],
               size: 26,
             ),
             onPressed: _toggleLike,
           ),
         ),
         Text(
-          '$likeCount',
+          '${widget.isLiked ? 1 : 0}',
           style: TextStyle(
             color: Colors.grey[300],
             fontWeight: FontWeight.bold,
