@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'pages/feed_page.dart';
 import 'pages/main_navigation.dart';
 
 void main() {
