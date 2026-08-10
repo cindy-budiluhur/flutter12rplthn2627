@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter12rplthn2627/models/song_model.dart';
 import 'package:flutter12rplthn2627/pages/favorite_page.dart';
+import 'package:flutter12rplthn2627/providers/favorite_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
-  final List<Song> favoriteSongs;
-  final void Function(Song)? onFavoriteToggle;
+  final List<Song> allSongs;
 
-  const ProfilePage({
-    super.key,
-    required this.favoriteSongs,
-    this.onFavoriteToggle,
-  });
+  const ProfilePage({super.key, required this.allSongs});
 
   @override
   Widget build(BuildContext context) {
+    final favProvider = context.watch<FavoriteProvider>();
+    final likedCount = favProvider.favoriteIds.length;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -56,7 +56,7 @@ class ProfilePage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildStatItem('${favoriteSongs.length}', 'Liked'),
+                  _buildStatItem('$likedCount', 'Liked'),
                   Container(height: 24, width: 1, color: Colors.white10),
                   _buildStatItem('24h', 'Streamed'),
                   Container(height: 24, width: 1, color: Colors.white10),
@@ -74,10 +74,7 @@ class ProfilePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FavoritePage(
-                      favoriteSongs: favoriteSongs,
-                      onFavoriteToggle: onFavoriteToggle,
-                    ),
+                    builder: (context) => FavoritePage(allSongs: allSongs),
                   ),
                 );
               },

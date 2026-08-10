@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter12rplthn2627/providers/favorite_provider.dart';
+import 'package:provider/provider.dart';
 import 'pages/main_navigation.dart';
 
-void main() {
-  runApp(const VibeMusicApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final favProvider = FavoriteProvider();
+  await favProvider.initStorage();
+
+  runApp(
+    ChangeNotifierProvider.value(value: favProvider, child: const MyApp()),
+  );
 }
 
-class VibeMusicApp extends StatelessWidget {
-  const VibeMusicApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Vibe Music Studio',
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0B0E14),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF6366F1),
-          secondary: Color(0xFFEC4899),
-          surface: Color(0xFF151922),
-        ),
-      ),
+      title: 'Music App',
+      theme: ThemeData.dark(),
       home: const MainNavigation(),
     );
   }
 }
- 

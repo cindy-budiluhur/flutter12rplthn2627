@@ -1,50 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter12rplthn2627/models/song_model.dart';
+import 'package:flutter12rplthn2627/providers/favorite_provider.dart';
 import 'package:flutter12rplthn2627/widgets/song_card.dart';
 
-class FavoritePage extends StatefulWidget {
-  final List<Song> favoriteSongs;
-  final void Function(Song)? onFavoriteToggle;
+class FavoritePage extends StatelessWidget {
+  final List<Song> allSongs;
 
-  const FavoritePage({
-    super.key,
-    required this.favoriteSongs,
-    this.onFavoriteToggle,
-  });
-
-  @override
-  State<FavoritePage> createState() => _FavoritePageState();
-}
-
-class _FavoritePageState extends State<FavoritePage> {
-  late List<Song> displaySongs;
-
-  @override
-  void initState() {
-    super.initState();
-    displaySongs = List.from(widget.favoriteSongs);
-  }
-
-  void _handleRemove(Song song) {
-    setState(() {
-      displaySongs.removeWhere((item) => item.id == song.id);
-    });
-
-    widget.onFavoriteToggle?.call(song);
-  }
+  const FavoritePage({super.key, required this.allSongs});
 
   @override
   Widget build(BuildContext context) {
+    final favProvider = context.watch<FavoriteProvider>();
+
+    final favoriteSongs = allSongs
+        .where((song) => favProvider.isFavorite(song.id))
+        .toList();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'Favorite Songs (${widget.favoriteSongs.length})',
+          'Favorite Songs (${favoriteSongs.length})',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: widget.favoriteSongs.isEmpty
+      body: favoriteSongs.isEmpty
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -64,16 +46,12 @@ class _FavoritePageState extends State<FavoritePage> {
             )
           : ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: widget.favoriteSongs.length,
+              itemCount: favoriteSongs.length,
               itemBuilder: (context, index) {
-                final song = widget.favoriteSongs[index];
+                final song = favoriteSongs[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: SongCard(
-                    song: song,
-                    isFavorite: true,
-                    onFavoriteToggle: () => _handleRemove(song),
-                  ),
+                  child: SongCard(song: song),
                 );
               },
             ),
