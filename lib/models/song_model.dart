@@ -12,6 +12,14 @@ class Song {
     required this.coverUrl,
     required this.tag,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Song && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 final List<Song> sampleSongs = [

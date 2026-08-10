@@ -19,8 +19,10 @@ class _MainNavigationState extends State<MainNavigation> {
 
   void toggleFavorite(Song song) {
     setState(() {
-      if (favoriteSongs.contains(song)) {
-        favoriteSongs.remove(song);
+      final index = favoriteSongs.indexWhere((item) => item.id == song.id);
+
+      if (index != -1) {
+        favoriteSongs.removeAt(index);
       } else {
         favoriteSongs.add(song);
       }
