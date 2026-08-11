@@ -15,27 +15,12 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
-  List<Song> favoriteSongs = [];
-
-  void toggleFavorite(Song song) {
-    setState(() {
-      if (favoriteSongs.contains(song)) {
-        favoriteSongs.remove(song);
-      } else {
-        favoriteSongs.add(song);
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
-      FeedPage(favoriteSongs: favoriteSongs, onFavoriteToggle: toggleFavorite),
+      const FeedPage(),
       const SearchPage(),
-      ProfilePage(
-        favoriteSongs: favoriteSongs,
-        onFavoriteToggle: toggleFavorite,
-      ),
+      ProfilePage(allSongs: sampleSongs),
     ];
 
     return Scaffold(
