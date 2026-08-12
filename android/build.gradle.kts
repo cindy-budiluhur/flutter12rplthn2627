@@ -5,6 +5,13 @@ allprojects {
     }
 }
 
+android {
+    defaultConfig {
+        minSdk = 21  // ← Pastikan 21 atau lebih
+        // ...
+    }
+}
+
 val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()
 rootProject.layout.buildDirectory.value(newBuildDir)
 
