@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter12rplthn2627/pages/detail_page.dart';
 import '../models/song_model.dart';
 import '../widgets/song_card.dart';
 
@@ -81,7 +82,16 @@ class _FeedPageState extends State<FeedPage> {
         itemCount: songs.length,
         itemBuilder: (context, index) {
           final song = songs[index];
-          return SongCard(song: song);
+
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DetailPage(song: song)),
+              );
+            },
+            child: SongCard(song: song),
+          );
         },
       ),
     );
