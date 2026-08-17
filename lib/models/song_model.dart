@@ -31,7 +31,7 @@ final List<Song> sampleSongs = [
     artist: 'Lo-Fi Chill Hop',
     coverUrl: 'https://picsum.photos/id/145/800/600',
     tag: 'Trending',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    audioUrl: 'assets/audio/Koiiro.mp3',
   ),
   Song(
     id: '2',
@@ -49,4 +49,12 @@ final List<Song> sampleSongs = [
     tag: 'Relax',
     audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
   ),
+];
+
+final List<String> categories = [
+  'All',
+  'Trending',
+  'Popular',
+  'Relax',
+  'Synthwave',
 ];
