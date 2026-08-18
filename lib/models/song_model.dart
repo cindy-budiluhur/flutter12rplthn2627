@@ -31,7 +31,7 @@ final List<Song> sampleSongs = [
     artist: 'Lo-Fi Chill Hop',
     coverUrl: 'https://picsum.photos/id/145/800/600',
     tag: 'Trending',
-    audioUrl: 'assets/audio/Koiiro.mp3',
+    audioUrl: 'audio/Koiiro.mp3',
   ),
   Song(
     id: '2',

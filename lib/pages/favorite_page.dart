@@ -44,17 +44,21 @@ class FavoritePage extends StatelessWidget {
                 ],
               ),
             )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: favoriteSongs.length,
-              itemBuilder: (context, index) {
-                final song = favoriteSongs[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: SongCard(song: song),
-                );
-              },
-            ),
+            : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: favoriteSongs.length,
+                itemBuilder: (context, index) {
+                  final song = favoriteSongs[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: SongCard(
+                      song: song,
+                      playlist: favoriteSongs,
+                      initialIndex: index,
+                    ),
+                  );
+                },
+              ),
     );
   }
 }

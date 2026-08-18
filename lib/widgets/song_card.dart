@@ -2,18 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/song_model.dart';
 import '../pages/detail_page.dart';
+import '../providers/audio_player_provider.dart';
 import '../providers/favorite_provider.dart';
 import 'animated_like_button.dart';
 
 class SongCard extends StatelessWidget {
   final Song song;
+  final List<Song>? playlist;
+  final int initialIndex;
+  final VoidCallback? onTap;
 
-  const SongCard({super.key, required this.song});
+  const SongCard({
+    super.key,
+    required this.song,
+    this.playlist,
+    this.initialIndex = 0,
+    this.onTap,
+  });
+
+  void _openDetail(BuildContext context) {
+    if (onTap != null) {
+      onTap!();
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailPage(
+          song: song,
+          playlist: playlist,
+          initialIndex: initialIndex,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final favProvider = context.watch<FavoriteProvider>();
+    final audioProvider = context.watch<AudioPlayerProvider>();
     final isFavorite = favProvider.isFavorite(song.id);
+    final isCurrentSong = audioProvider.currentSong?.id == song.id;
+    final isPlaying = isCurrentSong && audioProvider.isPlaying;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
@@ -22,7 +52,7 @@ class SongCard extends StatelessWidget {
         border: Border.all(color: Colors.white10),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -33,14 +63,7 @@ class SongCard extends StatelessWidget {
         child: Column(
           children: [
             GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailPage(song: song),
-                  ),
-                );
-              },
+              onTap: () => _openDetail(context),
               child: Stack(
                 children: [
                   Hero(
@@ -61,7 +84,7 @@ class SongCard extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.75),
+                            Colors.black.withValues(alpha: 0.75),
                           ],
                         ),
                       ),
@@ -77,7 +100,7 @@ class SongCard extends StatelessWidget {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: Colors.white.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(30),
                         border: Border.all(color: Colors.white24),
                       ),
@@ -99,29 +122,58 @@ class SongCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        song.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => _openDetail(context),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            song.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            song.artist,
+                            style: TextStyle(color: Colors.grey[400], fontSize: 13),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        song.artist,
-                        style: TextStyle(color: Colors.grey[400], fontSize: 13),
-                      ),
-                    ],
+                    ),
                   ),
 
-                  AnimatedLikeButton(
-                    isLiked: isFavorite,
-                    onTap: () {
-                      context.read<FavoriteProvider>().toggleFavorite(song.id);
-                    },
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          isPlaying
+                              ? Icons.pause_circle_filled_rounded
+                              : Icons.play_circle_fill_rounded,
+                          color: const Color(0xFF6366F1),
+                          size: 34,
+                        ),
+                        onPressed: () {
+                          if (isCurrentSong) {
+                            audioProvider.togglePlayPause();
+                          } else {
+                            audioProvider.playSong(song);
+                          }
+                        },
+                      ),
+                      AnimatedLikeButton(
+                        isLiked: isFavorite,
+                        onTap: () {
+                          context
+                              .read<FavoriteProvider>()
+                              .toggleFavorite(song.id);
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
